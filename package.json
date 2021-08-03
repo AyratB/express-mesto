@@ -1,4 +1,13 @@
 {
     "name": "express-mesto",
-    "author": "Ayrat Burnashev"
+    "author": "Ayrat Burnashev",
+    "devDependencies": {
+        "eslint": "^7.2.0",
+        "eslint-config-airbnb-base": "^14.2.1",
+        "eslint-plugin-import": "^2.23.4",
+        "eslint-plugin-react": "^7.24.0"
+    },
+    "scripts": {
+        "lint": "npx eslint"
+    }
 }
