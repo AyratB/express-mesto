@@ -29,7 +29,3 @@ app.use('/cards', require('./routes/cards'));
 app.listen(PORT, () => {
   console.log(`Запускаемся на порту №${PORT}`);
 });
-
-
-
-
