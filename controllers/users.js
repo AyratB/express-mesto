@@ -1,7 +1,6 @@
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-// eslint-disable-next-line import/no-unresolved
 require('dotenv').config();
 const User = require('../models/user');
 
