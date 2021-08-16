@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
+const {
+  login, createUser,
+} = require('./controllers/users');
+
 const { PORT = 3000 } = process.env;
 
 const app = express();
@@ -22,9 +26,11 @@ app.use((req, res, next) => {
   req.user = {
     _id: '610a28c8bef8c25454ca35e5',
   };
-
   next();
 });
+
+app.post('/signin', login);
+app.post('/signup', createUser);
 
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));

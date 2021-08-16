@@ -1,8 +1,12 @@
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+// eslint-disable-next-line import/no-unresolved
+require('dotenv').config();
 const User = require('../models/user');
 
 const UNCORRECT_DATA_ERROR_CODE = 400;
+const UNAUTHORIZED_ERROR_CODE = 401;
 const NOT_FOUND_ERROR_CODE = 404;
 const DEFAULT_ERROR_CODE = 500;
 
@@ -132,5 +136,28 @@ module.exports.updateUserAvatar = (req, res) => {
       return res
         .status(DEFAULT_ERROR_CODE)
         .send({ message: 'Ошибка по умолчанию' });
+    });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id },
+        process.env.JWT_SECRET,
+        { expiresIn: '7d' });
+
+      res
+        .cookie('jwt', token, {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: true,
+        })
+        .end();
+    })
+    .catch((err) => {
+      res
+        .status(UNAUTHORIZED_ERROR_CODE)
+        .send({ message: err.message });
     });
 };
