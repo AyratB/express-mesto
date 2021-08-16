@@ -1,4 +1,3 @@
-const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
@@ -25,7 +24,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  User.findById(req.params.userId)
+  User.findById(req.user._id)
     .orFail(new Error('NoValidid'))
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
@@ -40,7 +39,27 @@ module.exports.getUser = (req, res) => {
           .send({ message: 'Переданы некорректные данные' })
         : res
           .status(DEFAULT_ERROR_CODE)
-          .send({ message: 'Произошла ошибка удаления карточки' });
+          .send({ message: 'Произошла ошибка получения данных пользователя' });
+    });
+};
+
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .orFail(new Error('NoValidid'))
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err.message === 'NoValidid') {
+        return res
+          .status(NOT_FOUND_ERROR_CODE)
+          .send({ message: 'Пользователь по указанному _id не найден.' });
+      }
+      return err.name === 'CastError'
+        ? res
+          .status(UNCORRECT_DATA_ERROR_CODE)
+          .send({ message: 'Переданы некорректные данные' })
+        : res
+          .status(DEFAULT_ERROR_CODE)
+          .send({ message: 'Произошла ошибка получения данных пользователя' });
     });
 };
 
@@ -53,7 +72,7 @@ module.exports.createUser = (req, res) => {
     password,
   } = req.body;
 
-  if (validator.isEmail(email)) {
+  if (email && password) {
     bcrypt.hash(password, 10)
       .then((hash) => User.create({
         name,
@@ -73,9 +92,7 @@ module.exports.createUser = (req, res) => {
       });
   }
 
-  return res
-    .status(DEFAULT_ERROR_CODE)
-    .send({ message: 'Некорректный формат переданного email' });
+  return res.status(UNCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы пустые значения пароля или email' });
 };
 
 module.exports.updateUserData = (req, res) => {

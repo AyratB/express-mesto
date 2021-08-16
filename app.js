@@ -26,13 +26,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(helmet());
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '610a28c8bef8c25454ca35e5',
-  };
-  next();
-});
-
 app.post('/signin', login);
 app.post('/signup', createUser);
 
