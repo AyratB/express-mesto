@@ -61,4 +61,12 @@ userSchema.statics.findUserByCredentials = function findUserByCredentials(email,
   return Promise.reject(new Error('Пароль или email не могут быть пустыми'));
 };
 
+function toJSON() {
+  const obj = this.toObject();
+  delete obj.password;
+  return obj;
+}
+
+userSchema.methods.toJSON = toJSON;
+
 module.exports = mongoose.model('user', userSchema);

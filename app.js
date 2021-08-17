@@ -11,6 +11,7 @@ const {
   login, createUser,
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const commonErrorHandler = require('./middlewares/commonErrorHandler');
 
 const { PORT = 3000 } = process.env;
 
@@ -29,20 +30,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(helmet());
 
-// app.post('/signin', login);
-
 app.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().min(2).max(30),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(2),
   }),
 }), login);
 
-// app.post('/signup', createUser);
-
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required().min(2).max(30),
+    email: Joi.string().required().email(),
     password: Joi.string().required().min(2),
   }),
 }), createUser);
@@ -58,16 +55,6 @@ app.get('*', (req, res, next) => {
 
 app.use(errors());
 
-app.use((err, req, res) => {
-  const { statusCode = 500, message } = err;
-
-  res
-    .status(statusCode)
-    .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-});
+app.use(commonErrorHandler);
 
 app.listen(PORT);
