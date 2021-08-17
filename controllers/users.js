@@ -87,6 +87,7 @@ module.exports.updateUserData = (req, res, next) => {
       runValidators: true,
     },
   )
+    .where('_id').equals(req.user._id)
     .orFail(new Error('NoValidid'))
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
@@ -111,6 +112,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
       runValidators: true,
     },
   )
+    .where('_id').equals(req.user._id)
     .orFail(new Error('NoValidid'))
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {

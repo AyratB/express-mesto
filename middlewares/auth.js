@@ -19,7 +19,7 @@ module.exports = (req, res, next) => {
     req.user = payload;
 
     next();
+  } else {
+    next(new ForbiddenError('Доступ запрещен. Необходима авторизация'));
   }
-
-  next(new ForbiddenError('Доступ запрещен. Необходима авторизация'));
 };
