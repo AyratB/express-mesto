@@ -31,6 +31,6 @@ app.use('/cards', require('./routes/cards'));
 
 app.get('*', (req, res) => {
   res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
-}); 
+});
 
 app.listen(PORT);
