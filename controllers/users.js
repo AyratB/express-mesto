@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const User = require('../models/user');
 
+const { JWT_SECRET = 'dev-key' } = process.env;
+
 const UncorrectDataError = require('../errors/uncorrect_data_err');
 const UnauthorizedError = require('../errors/unauthorized_err');
 const NotFoundError = require('../errors/not_found_err');
@@ -132,7 +134,7 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id },
-        process.env.JWT_SECRET,
+        JWT_SECRET,
         { expiresIn: '7d' });
 
       res
